@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Funcionamento — Agência Verbo</title>
+    <meta name="description" content="Manual interno da Agência Verbo: organização das pastas no Drive, padrões de arquivos e funcionamento das automações do ClickUp.">
+    <link rel="icon" href="digital_y.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'RNS Camelia';
+            src: url('fonts/RNSCamelia-Regular.woff2') format('woff2');
+            font-weight: 400; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'RNS Camelia';
+            src: url('fonts/RNSCamelia-Bold.woff2') format('woff2');
+            font-weight: 700; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'RNS Camelia';
+            src: url('fonts/RNSCamelia-ExtraBold.woff2') format('woff2');
+            font-weight: 800; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'RNS Camelia';
+            src: url('fonts/RNSCamelia-Black.woff2') format('woff2');
+            font-weight: 900; font-style: normal; font-display: swap;
+        }
+
+        :root {
+            --bg-dark: #0a0a08;
+            --color-primary: #1A1A14;
+            --color-secondary: #5A6325;
+            --color-accent: #CCFF00;
+            --color-white: #FFFFFF;
+            --color-text-dim: rgba(255, 255, 255, 0.6);
+            --font-heading: 'RNS Camelia', serif;
+            --font-body: 'Montserrat', sans-serif;
+            --sidebar-w: 280px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--color-white);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+        }
+
+        /* ── Background Orbs + texture ── */
+        body::before, body::after {
+            content: ''; position: fixed;
+            width: 60vw; height: 60vw; border-radius: 50%;
+            filter: blur(120px); z-index: 0; opacity: 0.07;
+            pointer-events: none;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        body::before { background: var(--color-accent); top: -20%; left: -15%; }
+        body::after  { background: var(--color-secondary); bottom: -20%; right: -15%; animation-delay: -10s; }
+        @keyframes float {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 10%) scale(1.2); }
+        }
+        .bg-texture {
+            position: fixed; inset: 0;
+            background-image: url('bg.png');
+            background-size: cover; background-position: center;
+            opacity: 0.06; z-index: 0; pointer-events: none; mix-blend-mode: screen;
+        }
+
+        @keyframes pulse {
+            0%   { box-shadow: 0 0 0 0 rgba(204,255,0,0.7); }
+            70%  { box-shadow: 0 0 0 8px rgba(204,255,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(204,255,0,0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Layout ── */
+        .doc-layout {
+            position: relative; z-index: 1;
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            position: sticky; top: 0;
+            align-self: start;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid rgba(204,255,0,0.15);
+            padding: 2rem 1.5rem;
+            display: flex; flex-direction: column; gap: 1.5rem;
+            background: rgba(10,10,8,0.6);
+            backdrop-filter: blur(8px);
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(204,255,0,0.25); border-radius: 10px; }
+
+        .sidebar-brand {
+            display: flex; align-items: center; gap: 0.85rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(204,255,0,0.12);
+        }
+        .logo-mark {
+            width: 42px; height: 42px;
+            background: rgba(204,255,0,0.06);
+            border: 1px solid rgba(204,255,0,0.25);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; overflow: hidden;
+        }
+        .logo-mark img { width: 78%; height: 78%; object-fit: contain; display: block; }
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 1rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 2px;
+            color: var(--color-white); line-height: 1.1;
+        }
+        .logo-text span {
+            display: block; font-family: var(--font-body);
+            font-size: 0.6rem; font-weight: 500; letter-spacing: 1.5px;
+            color: var(--color-text-dim); margin-top: 0.15rem;
+        }
+
+        .nav-label {
+            font-size: 0.62rem; font-weight: 800; letter-spacing: 2.5px;
+            text-transform: uppercase; color: rgba(204,255,0,0.5);
+            margin-bottom: -0.5rem;
+        }
+        .nav { display: flex; flex-direction: column; gap: 0.15rem; }
+        .nav-link {
+            display: flex; align-items: center; gap: 0.65rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            color: var(--color-text-dim);
+            text-decoration: none;
+            font-size: 0.82rem; font-weight: 600;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .nav-link .nav-num {
+            font-size: 0.68rem; font-weight: 800;
+            color: rgba(204,255,0,0.45);
+            width: 18px; flex-shrink: 0;
+        }
+        .nav-link:hover { color: var(--color-white); background: rgba(204,255,0,0.05); }
+        .nav-link.active {
+            color: var(--color-accent);
+            background: rgba(204,255,0,0.08);
+            border-color: rgba(204,255,0,0.3);
+        }
+        .nav-link.active .nav-num { color: var(--color-accent); }
+
+        .sidebar-foot {
+            margin-top: auto; padding-top: 1.25rem;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            font-size: 0.65rem; color: rgba(255,255,255,0.25);
+            line-height: 1.5;
+        }
+        .sidebar-foot a { color: rgba(204,255,0,0.6); text-decoration: none; }
+        .sidebar-foot a:hover { color: var(--color-accent); }
+
+        /* ── Content ── */
+        .content {
+            padding: 3rem 3.5rem 6rem;
+            max-width: 960px;
+            width: 100%;
+        }
+
+        /* ── Header ── */
+        .site-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+            margin-bottom: 3.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(204,255,0,0.15);
+        }
+        .doc-badge {
+            display: inline-flex; align-items: center; gap: 0.45rem;
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            border-radius: 6px;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 2px;
+            color: var(--color-accent); text-transform: uppercase;
+        }
+        .pulse-dot {
+            width: 7px; height: 7px;
+            background-color: var(--color-accent); border-radius: 50%;
+            box-shadow: 0 0 8px var(--color-accent);
+            animation: pulse 2s infinite;
+        }
+        .header-date { font-size: 0.72rem; color: var(--color-text-dim); font-weight: 500; }
+
+        /* mobile topbar (hidden on desktop) */
+        .topbar { display: none; }
+
+        /* ── Hero ── */
+        .hero { margin-bottom: 3.5rem; scroll-margin-top: 1.5rem; }
+        .hero-eyebrow {
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 3px;
+            text-transform: uppercase; color: rgba(204,255,0,0.6);
+            margin-bottom: 1rem;
+        }
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+            font-weight: 900; line-height: 0.98;
+            text-transform: uppercase; letter-spacing: -2px;
+            margin-bottom: 1.5rem;
+        }
+        .hero-title .accent { color: var(--color-accent); }
+        .hero-body {
+            max-width: 640px; font-size: 1rem; line-height: 1.7;
+            color: var(--color-text-dim); font-weight: 400;
+        }
+        .hero-body strong { color: var(--color-white); font-weight: 700; }
+        .manifesto {
+            font-family: var(--font-heading);
+            font-size: 1.05rem; font-weight: 700;
+            color: rgba(204,255,0,0.85);
+            letter-spacing: 0.5px; line-height: 1.5;
+            margin-top: 2rem; padding-left: 1.2rem;
+            border-left: 3px solid var(--color-accent);
+            text-transform: uppercase;
+        }
+
+        /* ── Section ── */
+        .section { scroll-margin-top: 1.5rem; margin-bottom: 6.5rem; }
+        .section-head {
+            display: flex; align-items: flex-start; gap: 1.25rem;
+            margin-bottom: 1.75rem;
+        }
+        .phase-number {
+            flex-shrink: 0;
+            width: 52px; height: 52px;
+            background: var(--color-accent); color: var(--color-primary);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-heading);
+            font-size: 1.4rem; font-weight: 900;
+        }
+        .section-info { flex: 1; padding-top: 0.1rem; }
+        .phase-name {
+            font-family: var(--font-heading);
+            font-size: clamp(1.5rem, 3.2vw, 2rem);
+            font-weight: 900; text-transform: uppercase;
+            letter-spacing: -1px; line-height: 1; margin-bottom: 0.4rem;
+        }
+        .phase-period {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            font-size: 0.72rem; font-weight: 600;
+            color: rgba(204,255,0,0.7); letter-spacing: 1px; text-transform: uppercase;
+        }
+        .phase-period::before {
+            content: ''; display: inline-block;
+            width: 20px; height: 1px; background: var(--color-accent); opacity: 0.5;
+        }
+
+        .lead-text {
+            font-size: 0.95rem; line-height: 1.75;
+            color: rgba(255,255,255,0.78); margin-bottom: 1.5rem;
+            max-width: 680px;
+        }
+        .lead-text strong { color: var(--color-accent); font-weight: 700; }
+
+        /* ── Objetivo / Callout block ── */
+        .objetivo-block, .callout {
+            background: var(--color-primary);
+            border: 2px solid var(--color-accent);
+            border-radius: 12px;
+            padding: 1.6rem 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 8px 8px 0px rgba(204,255,0,0.15);
+            position: relative; overflow: hidden;
+        }
+        .objetivo-block::before, .callout::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: var(--color-accent);
+        }
+        .objetivo-label {
+            font-size: 0.62rem; font-weight: 800; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--color-accent);
+            margin-bottom: 0.75rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .objetivo-text {
+            font-size: 1rem; line-height: 1.7;
+            color: rgba(255,255,255,0.88); font-weight: 400;
+        }
+        .objetivo-text strong { color: var(--color-accent); font-weight: 700; }
+
+        /* ── Card grid ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem; margin: 1.5rem 0;
+        }
+        .info-card {
+            background: var(--color-primary);
+            border: 1px solid rgba(204,255,0,0.25);
+            border-radius: 10px;
+            padding: 1.4rem;
+            transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .info-card:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(204,255,0,0.12);
+        }
+        .info-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--color-accent) 0%, transparent 100%);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .info-card:hover::before { opacity: 1; }
+        .card-icon { font-size: 1.6rem; margin-bottom: 0.6rem; display: block; }
+        .card-title {
+            font-size: 0.95rem; font-weight: 800; color: var(--color-white);
+            text-transform: uppercase; letter-spacing: 0.3px;
+            margin-bottom: 0.5rem; line-height: 1.2;
+        }
+        .card-title .num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 24px; height: 24px; margin-right: 0.5rem;
+            background: rgba(204,255,0,0.1); border: 1px solid rgba(204,255,0,0.3);
+            border-radius: 6px; font-size: 0.72rem; color: var(--color-accent);
+            vertical-align: middle;
+        }
+        .card-desc {
+            font-size: 0.82rem; line-height: 1.65; color: var(--color-text-dim);
+        }
+        .card-desc strong { color: rgba(255,255,255,0.85); font-weight: 700; }
+        .card-tag {
+            display: inline-block; margin-top: 0.85rem;
+            font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; padding: 0.2rem 0.6rem; border-radius: 4px;
+            background: rgba(204,255,0,0.08); border: 1px solid rgba(204,255,0,0.2);
+            color: rgba(204,255,0,0.85);
+        }
+
+        /* ── Folder tree ── */
+        .folder-tree {
+            background: #100f0a;
+            border: 1px solid rgba(204,255,0,0.2);
+            border-radius: 10px;
+            padding: 1.4rem 1.6rem;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem; line-height: 1.85;
+            overflow-x: auto; white-space: pre;
+            box-shadow: 6px 6px 0 rgba(204,255,0,0.08);
+        }
+        .folder-tree .t-dir { color: var(--color-accent); font-weight: 700; }
+        .folder-tree .t-guide { color: rgba(204,255,0,0.35); }
+        .folder-tree .t-file { color: rgba(255,255,255,0.8); }
+        .folder-tree .t-note { color: rgba(255,255,255,0.4); font-style: italic; }
+        .folder-tree .t-root { color: #fff; font-weight: 800; }
+
+        /* ── Code block ── */
+        .code-block {
+            background: #100f0a;
+            border: 1px solid rgba(204,255,0,0.25);
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            box-shadow: 6px 6px 0 rgba(204,255,0,0.08);
+        }
+        .code-head {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.7rem 1.1rem;
+            background: rgba(204,255,0,0.06);
+            border-bottom: 1px solid rgba(204,255,0,0.15);
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; color: rgba(204,255,0,0.8);
+        }
+        .code-body {
+            padding: 1.2rem 1.4rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.84rem; line-height: 1.7;
+            color: rgba(255,255,255,0.85);
+            white-space: pre-wrap;
+        }
+        .code-body .k { color: var(--color-accent); font-weight: 700; }
+        .code-body .c { color: rgba(255,255,255,0.45); }
+
+        /* ── Flow steps ── */
+        .flow { display: flex; flex-direction: column; gap: 0.85rem; margin: 1.5rem 0; }
+        .flow-step {
+            display: flex; align-items: flex-start; gap: 1rem;
+            background: rgba(204,255,0,0.04);
+            border: 1px solid rgba(204,255,0,0.15);
+            border-radius: 10px; padding: 1rem 1.25rem;
+        }
+        .flow-num {
+            flex-shrink: 0;
+            width: 30px; height: 30px;
+            background: var(--color-accent); color: var(--color-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 800;
+        }
+        .flow-text { font-size: 0.88rem; line-height: 1.6; color: rgba(255,255,255,0.82); padding-top: 0.2rem; }
+        .flow-text strong { color: var(--color-accent); font-weight: 700; }
+
+        /* ── Status badges (automações) ── */
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-size: 0.66rem; font-weight: 700; letter-spacing: 0.5px;
+            text-transform: uppercase; padding: 0.3rem 0.7rem; border-radius: 5px;
+            margin-bottom: 0.75rem;
+        }
+        .status-ia       { background: rgba(204,255,0,0.12);  color: var(--color-accent); border: 1px solid rgba(204,255,0,0.3); }
+        .status-wpp      { background: rgba(37,211,102,0.12); color: #4ade80; border: 1px solid rgba(37,211,102,0.3); }
+        .status-pub      { background: rgba(100,210,255,0.1); color: #64d2ff; border: 1px solid rgba(100,210,255,0.3); }
+
+        /* ── Divider ── */
+        .phase-divider {
+            display: flex; align-items: center; gap: 1rem;
+            margin: 3rem 0 0; opacity: 0.25;
+        }
+        .phase-divider::before, .phase-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--color-accent);
+        }
+        .phase-divider span {
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--color-accent);
+        }
+
+        /* ── Footer ── */
+        .site-footer {
+            margin-top: 4rem; padding-top: 2rem;
+            border-top: 1px solid rgba(204,255,0,0.12);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .footer-brand {
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: rgba(255,255,255,0.35);
+        }
+        .footer-brand span { color: var(--color-accent); }
+        .footer-brand a { color: rgba(204,255,0,0.7); text-decoration: none; }
+        .footer-brand a:hover { color: var(--color-accent); }
+        .footer-note { font-size: 0.68rem; color: rgba(255,255,255,0.22); font-weight: 500; }
+
+        /* ── Entrance animation ── */
+        .reveal { opacity: 0; }
+        .reveal.in { animation: fadeIn 0.6s ease forwards; }
+
+        /* ── Support Chat Widget ── */
+        .support-fab {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 60;
+            display: inline-flex; align-items: center; gap: 0.6rem;
+            background: var(--color-accent); color: var(--color-primary);
+            border: none; border-radius: 50px; cursor: pointer;
+            padding: 0.85rem 1.3rem;
+            font-family: var(--font-body); font-size: 0.85rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 6px 24px rgba(204,255,0,0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .support-fab svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .support-fab:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(204,255,0,0.5); }
+        body.support-open .support-fab { display: none; }
+
+        .support-panel {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 61;
+            width: 380px; max-width: calc(100vw - 2rem);
+            height: 580px; max-height: calc(100vh - 3rem);
+            background: var(--color-primary);
+            border: 2px solid var(--color-accent);
+            border-radius: 16px; overflow: hidden;
+            display: none; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 8px 8px 0 rgba(204,255,0,0.15);
+            animation: fadeIn 0.3s ease;
+        }
+        body.support-open .support-panel { display: flex; }
+
+        .support-header {
+            display: flex; align-items: center; gap: 0.85rem;
+            padding: 1rem 1.25rem;
+            background: var(--color-accent); color: var(--color-primary);
+            flex-shrink: 0;
+        }
+        .support-avatar {
+            width: 40px; height: 40px; flex-shrink: 0;
+            background: var(--color-primary); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .support-avatar img { width: 72%; height: 72%; object-fit: contain; }
+        .support-hinfo { flex: 1; line-height: 1.2; }
+        .support-hinfo h3 {
+            font-family: var(--font-heading); font-size: 1rem; font-weight: 800;
+            text-transform: uppercase; color: var(--color-primary);
+        }
+        .support-hinfo .st {
+            font-size: 0.7rem; font-weight: 600; color: var(--color-primary);
+            display: flex; align-items: center; gap: 0.3rem; opacity: 0.85; margin-top: 0.1rem;
+        }
+        .support-hinfo .st::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--color-primary); animation: blink 1.5s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+        .support-close {
+            background: var(--color-primary); color: var(--color-accent);
+            border: none; border-radius: 8px; cursor: pointer;
+            width: 32px; height: 32px; font-size: 1.1rem; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        .support-close:hover { transform: scale(1.08); }
+
+        .support-messages {
+            flex: 1; padding: 1.25rem; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+        .support-messages::-webkit-scrollbar { width: 4px; }
+        .support-messages::-webkit-scrollbar-thumb { background: rgba(204,255,0,0.25); border-radius: 10px; }
+
+        .s-msg { max-width: 88%; animation: fadeIn 0.3s ease; }
+        .s-msg .bubble { padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.55; border-radius: 12px; }
+        .s-msg.bot { align-self: flex-start; }
+        .s-msg.bot .bubble {
+            background: rgba(204,255,0,0.06); border: 1px solid rgba(204,255,0,0.2);
+            border-radius: 12px 12px 12px 4px; color: var(--color-white);
+        }
+        .s-msg.bot .bubble strong { color: var(--color-accent); }
+        .s-msg.bot .bubble code {
+            background: rgba(204,255,0,0.12); color: var(--color-accent);
+            border-radius: 4px; padding: 0.05rem 0.35rem; font-size: 0.85em;
+        }
+        .s-msg.bot .bubble ul { margin: 0.4rem 0 0.2rem 1.1rem; }
+        .s-msg.user { align-self: flex-end; }
+        .s-msg.user .bubble {
+            background: var(--color-accent); color: var(--color-primary);
+            font-weight: 600; border-radius: 12px 12px 4px 12px;
+        }
+
+        .s-typing { display: flex; gap: 5px; padding: 0.8rem 1rem; }
+        .s-typing span {
+            width: 7px; height: 7px; background: var(--color-accent); border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .s-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .s-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%,100%{transform:translateY(0);opacity:0.4;} 50%{transform:translateY(-4px);opacity:1;} }
+
+        .support-suggestions {
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+            padding: 0 1.25rem 0.5rem; flex-shrink: 0;
+        }
+        .s-chip {
+            background: transparent; border: 1px solid rgba(204,255,0,0.35);
+            border-radius: 20px; padding: 0.35rem 0.8rem;
+            color: var(--color-accent); font-family: var(--font-body);
+            font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .s-chip:hover { background: var(--color-accent); color: var(--color-primary); }
+
+        .support-input {
+            display: flex; gap: 0.6rem; padding: 0.9rem 1.1rem;
+            border-top: 1px solid rgba(204,255,0,0.2); flex-shrink: 0;
+        }
+        .support-input input {
+            flex: 1; background: transparent; border: 1px solid rgba(204,255,0,0.4);
+            border-radius: 8px; padding: 0.7rem 1rem; color: var(--color-white);
+            font-family: var(--font-body); font-size: 0.88rem;
+        }
+        .support-input input:focus { outline: none; box-shadow: 0 0 8px rgba(204,255,0,0.2); }
+        .support-input input::placeholder { color: rgba(204,255,0,0.35); }
+        .support-input button {
+            width: 44px; height: 44px; flex-shrink: 0; cursor: pointer;
+            background: var(--color-accent); color: var(--color-primary);
+            border: none; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; transition: transform 0.2s;
+        }
+        .support-input button:hover { transform: scale(1.05); }
+        .support-input button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .support-input button svg { width: 18px; height: 18px; }
+
+        @media (max-width: 480px) {
+            .support-panel { bottom: 0; right: 0; width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; border: none; }
+            .support-fab { bottom: 1rem; right: 1rem; }
+        }
+
+        /* ── Mobile drawer ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 40;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(3px);
+        }
+
+        @media (max-width: 900px) {
+            .doc-layout { grid-template-columns: 1fr; }
+            .sidebar {
+                position: fixed; top: 0; left: 0; z-index: 50;
+                width: 280px; height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            body.nav-open .sidebar { transform: translateX(0); }
+            body.nav-open .sidebar-overlay { display: block; }
+
+            .topbar {
+                display: flex; align-items: center; justify-content: space-between;
+                position: sticky; top: 0; z-index: 30;
+                padding: 0.85rem 1.25rem;
+                background: rgba(10,10,8,0.92);
+                backdrop-filter: blur(8px);
+                border-bottom: 1px solid rgba(204,255,0,0.15);
+            }
+            .topbar-brand { display: flex; align-items: center; gap: 0.6rem; }
+            .topbar-brand .logo-mark { width: 34px; height: 34px; font-size: 1.05rem; }
+            .topbar-brand .tb-title {
+                font-family: var(--font-heading); font-size: 0.85rem; font-weight: 800;
+                text-transform: uppercase; letter-spacing: 1.5px;
+            }
+            .menu-btn {
+                background: transparent; border: 1px solid rgba(204,255,0,0.3);
+                color: var(--color-accent); border-radius: 8px;
+                width: 40px; height: 40px; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                flex-direction: column; gap: 4px;
+            }
+            .menu-btn span { display: block; width: 18px; height: 2px; background: var(--color-accent); }
+
+            .content { padding: 2rem 1.25rem 4rem; }
+            .site-header { margin-bottom: 2.5rem; }
+            .section-head { gap: 0.9rem; }
+            .phase-number { width: 44px; height: 44px; font-size: 1.15rem; }
+            .objetivo-block, .callout { padding: 1.3rem 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-texture"></div>
+
+    <!-- Mobile topbar -->
+    <div class="topbar">
+        <div class="topbar-brand">
+            <div class="logo-mark"><img src="digital_y.png" alt="Verbo"></div>
+            <div class="tb-title">Manual Verbo</div>
+        </div>
+        <button class="menu-btn" id="menu-btn" aria-label="Abrir menu">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <div class="doc-layout">
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-mark"><img src="digital_y.png" alt="Verbo"></div>
+                <div class="logo-text">
+                    Verbo
+                    <span>Posicionamento Digital</span>
+                </div>
+            </div>
+
+            <div class="nav-label">Navegação</div>
+            <nav class="nav" id="nav">
+                <a class="nav-link" href="#inicio"><span class="nav-num">00</span> Início</a>
+                <a class="nav-link" href="#drive"><span class="nav-num">01</span> Organização no Drive</a>
+                <a class="nav-link" href="#pastas"><span class="nav-num">02</span> As Pastas do Cliente</a>
+                <a class="nav-link" href="#instagram"><span class="nav-num">03</span> Padrão da Pasta Instagram</a>
+                <a class="nav-link" href="#carrossel"><span class="nav-num">04</span> Carrossel</a>
+                <a class="nav-link" href="#clickup"><span class="nav-num">05</span> ClickUp — o centro</a>
+                <a class="nav-link" href="#automacoes"><span class="nav-num">06</span> Automações</a>
+            </nav>
+
+            <div class="sidebar-foot">
+                Manual interno · mantido pela equipe Verbo<br>
+                <a href="https://www.somosverbo.com.br" target="_blank" rel="noopener">somosverbo.com.br</a>
+            </div>
+        </aside>
+
+        <!-- Content -->
+        <main class="content">
+
+            <!-- Header -->
+            <header class="site-header">
+                <div class="doc-badge">
+                    <span class="pulse-dot"></span>
+                    Documento Interno
+                </div>
+                <div class="header-date">Manual de Uso das Automações &nbsp;·&nbsp; Agência Verbo</div>
+            </header>
+
+            <!-- Hero -->
+            <section class="hero" id="inicio">
+                <div class="hero-eyebrow">Manual de Funcionamento</div>
+                <h1 class="hero-title">
+                    Como tudo<br>
+                    <span class="accent">funciona aqui.</span>
+                </h1>
+                <p class="hero-body">
+                    Este é o guia da <strong>Agência Verbo</strong> para toda a equipe: como
+                    <strong>organizamos as pastas dos clientes</strong> no Google Drive, os
+                    <strong>padrões de nomenclatura</strong> dos arquivos e como funcionam as
+                    <strong>automações do ClickUp</strong> que movem o nosso dia a dia. Use o menu ao
+                    lado para navegar — cada seção explica uma parte do sistema.
+                </p>
+                <p class="manifesto">
+                    Transformar é o que nos move.<br>Servir é o que nos guia.
+                </p>
+            </section>
+
+            <!-- 01 — Drive -->
+            <section class="section reveal" id="drive">
+                <div class="section-head">
+                    <div class="phase-number">01</div>
+                    <div class="section-info">
+                        <h2 class="phase-name">Organização no Drive</h2>
+                        <span class="phase-period">Google Drive · Pastas dos clientes</span>
+                    </div>
+                </div>
+                <p class="lead-text">
+                    Toda pasta de cliente vive em um caminho padrão e contém sempre as mesmas
+                    subpastas. Manter esse padrão é o que permite que qualquer pessoa — e as
+                    automações — encontrem os arquivos sem precisar perguntar.
+                </p>
+
+                <div class="objetivo-block">
+                    <div class="objetivo-label"><span class="pulse-dot"></span> Caminho oficial</div>
+                    <div class="objetivo-text">
+                        <strong>Meu Drive › _CLIENTES › [Nome do Cliente]</strong><br>
+                        É aqui que mora a pasta de cada cliente. Dentro dela, as subpastas seguem o
+                        padrão abaixo.
+                    </div>
+                </div>
+
+                <div class="folder-tree">
+<span class="t-root">📁 [Nome do Cliente]</span>
+<span class="t-guide">├─ </span><span class="t-dir">📁 Material</span>      <span class="t-note">› captações + identidade visual</span>
+<span class="t-guide">├─ </span><span class="t-dir">📁 Ideias</span>        <span class="t-note">› referências e ideias de conteúdo</span>
+<span class="t-guide">├─ </span><span class="t-dir">📁 Instagram</span>     <span class="t-note">› PSDs e mídias do feed/stories</span>
+<span class="t-guide">└─ </span><span class="t-note">... outras pastas (dependendo do cliente)</span>
+                </div>
+            </section>
+
+            <!-- 02 — Pastas -->
+            <section class="section reveal" id="pastas">
+                <div class="section-head">
+                    <div class="phase-number">02</div>
+                    <div class="section-info">
+                        <h2 class="phase-name">As Pastas do Cliente</h2>
+                        <span class="phase-period">O que guardar em cada uma</span>
+                    </div>
+                </div>
+                <p class="lead-text">
+                    Cada subpasta tem um propósito específico. Salvar o arquivo no lugar certo evita
+                    retrabalho e mantém o histórico do cliente organizado.
+                </p>
+
+                <div class="card-grid">
+                    <div class="info-card">
+                        <span class="card-icon">🗂️</span>
+                        <h3 class="card-title">Material</h3>
+                        <p class="card-desc">
+                            Armazena os <strong>materiais captados</strong> (fotos e vídeos), os arquivos
+                            da <strong>identidade visual</strong> do cliente e outros arquivos que podem
+                            ser úteis para uso futuro.
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">💡</span>
+                        <h3 class="card-title">Ideias</h3>
+                        <p class="card-desc">
+                            Guarda arquivos e <strong>referências de ideias</strong> de possíveis conteúdos
+                            que podem ser criados ou adaptados para o cliente.
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">📸</span>
+                        <h3 class="card-title">Instagram</h3>
+                        <p class="card-desc">
+                            Armazena os <strong>PSDs e as mídias</strong> que foram (ou serão)
+                            usadas/publicadas no Instagram do cliente. Tem um padrão próprio de
+                            organização — veja a próxima seção.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 03 — Instagram -->
+            <section class="section reveal" id="instagram">
+                <div class="section-head">
+                    <div class="phase-number">03</div>
+                    <div class="section-info">
+                        <h2 class="phase-name">Padrão da Pasta Instagram</h2>
+                        <span class="phase-period">Ano › Mês › Prontos + nomenclatura</span>
+                    </div>
+                </div>
+                <p class="lead-text">
+                    A pasta <strong>Instagram</strong> de todos os clientes é organizada da mesma forma,
+                    do ano até os arquivos finais prontos para publicar.
+                </p>
+
+                <div class="folder-tree">
+<span class="t-root">📁 Instagram</span>
+<span class="t-guide">└─ </span><span class="t-dir">📁 2026</span> <span class="t-note">› Pasta do Ano</span>
+<span class="t-guide">   └─ </span><span class="t-dir">📁 04Abril</span> <span class="t-note">› Pasta do Mês (editáveis: PSD, AI, PDF...)</span>
+<span class="t-guide">      └─ </span><span class="t-dir">📁 Prontos</span> <span class="t-note">› arquivos finais publicados/a publicar no mês</span>
+                </div>
+
+                <div class="card-grid">
+                    <div class="info-card">
+                        <h3 class="card-title"><span class="num">A</span>Pasta do Ano</h3>
+                        <p class="card-desc">Onde ficam as pastas de todos os meses. <strong>Ex: 2026</strong></p>
+                    </div>
+                    <div class="info-card">
+                        <h3 class="card-title"><span class="num">B</span>Pasta do Mês</h3>
+                        <p class="card-desc">Guarda os <strong>arquivos editáveis</strong> (PSD, AI, PDF...) daquele mês, além da pasta <strong>Prontos</strong>. <strong>Ex: 04Abril</strong></p>
+                    </div>
+                    <div class="info-card">
+                        <h3 class="card-title"><span class="num">C</span>Pasta Prontos</h3>
+                        <p class="card-desc">Onde ficam os <strong>arquivos finais</strong> que foram ou serão publicados naquele mês.</p>
+                    </div>
+                </div>
+
+                <div class="phase-divider"><span>nomenclatura dos arquivos</span></div>
+
+                <div class="callout" style="margin-top:2rem;">
+                    <div class="objetivo-label"><span class="pulse-dot"></span> Regra de ouro</div>
+                    <div class="objetivo-text">
+                        O nome do arquivo é sempre o <strong>nome exato da tarefa equivalente no ClickUp</strong>.
+                        É isso que conecta o arquivo no Drive à automação certa.
+                    </div>
+                </div>
+
+                <div class="card-grid">
+                    <div class="info-card">
+                        <span class="card-icon">🎨</span>
+                        <h3 class="card-title">Editável (PSD, AI...)</h3>
+                        <p class="card-desc">Fica <strong>dentro da pasta do mês</strong>.<br>Nome = nome exato da tarefa no ClickUp.</p>
+                        <span class="card-tag">Tarefa</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🖼️</span>
+                        <h3 class="card-title">Post estático</h3>
+                        <p class="card-desc">Feed / Story / Reels. Fica <strong>dentro de Prontos</strong>.<br>Nome = nome da tarefa + <strong>[tipo]</strong>.</p>
+                        <span class="card-tag">Tarefa [feed]</span>
+                        <span class="card-tag">Tarefa [story]</span>
+                        <span class="card-tag">Tarefa [reels]</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🎠</span>
+                        <h3 class="card-title">Carrossel</h3>
+                        <p class="card-desc">Cria-se uma <strong>pasta própria dentro de Prontos</strong>.<br>Nome da pasta = nome da tarefa + <strong>[carrossel]</strong>.</p>
+                        <span class="card-tag">Tarefa [carrossel]</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 04 — Carrossel -->
+            <section class="section reveal" id="carrossel">
+                <div class="section-head">
+                    <div class="phase-number">04</div>
+                    <div class="section-info">
+                        <h2 class="phase-name">Organização do Carrossel</h2>
+                        <span class="phase-period">Pasta Carrossel › feed e story › numerados</span>
+                    </div>
+                </div>
+                <p class="lead-text">
+                    A pasta do carrossel tem subpastas <strong>feed</strong> e <strong>story</strong>, e
+                    dentro de cada uma os arquivos ficam <strong>numerados na ordem de postagem</strong>.
+                </p>
+
+                <div class="folder-tree">
+<span class="t-root">📁 Tarefa [carrossel]</span>
+<span class="t-guide">├─ </span><span class="t-dir">📁 feed</span>
+<span class="t-guide">│  ├─ </span><span class="t-file">1</span>
+<span class="t-guide">│  ├─ </span><span class="t-file">2</span>
+<span class="t-guide">│  ├─ </span><span class="t-file">3</span>
+<span class="t-guide">│  ├─ </span><span class="t-file">4</span>
+<span class="t-guide">│  └─ </span><span class="t-file">5</span>
+<span class="t-guide">└─ </span><span class="t-dir">📁 story</span>
+<span class="t-guide">   ├─ </span><span class="t-file">1</span>
+<span class="t-guide">   ├─ </span><span class="t-file">2</span>
+<span class="t-guide">   └─ </span><span class="t-file">...</span>
+                </div>
+            </section>
+
+            <!-- 05 — ClickUp -->
+            <section class="section reveal" id="clickup">
+                <div class="section-head">
+                    <div class="phase-number">05</div>
+                    <div class="section-info">
+                        <h2 class="phase-name">ClickUp — o centro do sistema</h2>
+                        <span class="phase-period">Núcleo das automações e integrações</span>
+                    </div>
+                </div>
+                <p class="lead-text">
+                    A plataforma do <strong>ClickUp</strong> é a parte central do sistema de automações.
+                    É através dela que diversas ações e integrações com outras ferramentas acontecem.
+                </p>
+
+                <div class="card-grid">
+                    <div class="info-card">
+                        <span class="card-icon">⚙️</span>
+                        <h3 class="card-title">Ações por Status</h3>
+                        <p class="card-desc">Cada status de tarefa dispara uma ação automática (gerar arte, enviar para aprovação, publicar).</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">✨</span>
+                        <h3 class="card-title">Geração de Conteúdo</h3>
+                        <p class="card-desc">Criação automatizada de conteúdos para as redes sociais dos clientes.</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">📊</span>
+                        <h3 class="card-title">Geração de Relatório</h3>
+                        <p class="card-desc">Geração automatizada do relatório dos conteúdos programados.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 06 — Automações -->
+            <section class="section reveal" id="automacoes">
+                <div class="section-head">
+                    <div class="phase-number">06</div>
+                    <div class="section-info">
+                        <h2 class="phase-name">Automações</h2>
+                        <span class="phase-period">Como cada fluxo funciona na prática</span>
+                    </div>
+                </div>
+
+                <h3 class="card-title" style="font-size:1.05rem;margin-bottom:0.5rem;">Geração de conteúdo para redes sociais</h3>
+                <p class="lead-text">
+                    O fluxo de criação de conteúdo para as redes sociais dos clientes funciona assim:
+                </p>
+
+                <div class="flow">
+                    <div class="flow-step">
+                        <div class="flow-num">1</div>
+                        <div class="flow-text"><strong>Gatilho — Criar tarefa:</strong> quando uma tarefa é criada no ClickUp, ela recebe automaticamente o status <strong>Ideia</strong>.</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-num">2</div>
+                        <div class="flow-text">Em poucos segundos, um <strong>layout</strong> é inserido automaticamente na <strong>descrição da tarefa</strong>, indicando o formato a ser preenchido para solicitar a geração do conteúdo.</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-num">3</div>
+                        <div class="flow-text">A equipe preenche o layout. Ao <strong>remover a linha FINALIZADO</strong>, a automação roda e gera o conteúdo.</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-head">📝 Layout inserido na descrição da tarefa</div>
+<div class="code-body"><span class="k">Formato do post</span> [Estático / Carrossel / Story / Reel]
+
+<span class="k">Direção de Arte</span> [Estilo visual do conteúdo em uma frase
++ Textos que devem aparecer na arte
++ Todas as URLs recebidas da descrição da tarefa, uma abaixo da outra (se aplicável)]
+
+<span class="k">Legenda</span> [Orientações à IA sobre o conteúdo ou formatação da legenda (se aplicável)]
+
+<span class="k">FINALIZADO</span> <span class="c">(› remover esta linha para rodar a automação ‹)</span></div>
+                </div>
+
+                <div class="phase-divider"><span>ações integradas aos status</span></div>
+
+                <p class="lead-text" style="margin-top:2rem;">
+                    Alguns status de tarefa possuem automações integradas que disparam ações
+                    específicas ao serem aplicados:
+                </p>
+
+                <div class="card-grid">
+                    <div class="info-card">
+                        <span class="status-badge status-ia">✨ Gerar Post Design com IA</span>
+                        <p class="card-desc">
+                            Melhora e ajusta <strong>fotos cruas</strong>, colocando-as no formato
+                            <strong>feed</strong> e <strong>stories</strong>, e gera um <strong>story
+                            com a legenda</strong> do post (quando aplicável).
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <span class="status-badge status-wpp">💬 Aprovação Arte</span>
+                        <p class="card-desc">
+                            Busca e envia as mídias da tarefa para o <strong>grupo do cliente no
+                            WhatsApp</strong>, com botões de <strong>Aprovar</strong> (publica no horário
+                            pré-definido) ou <strong>Alterar</strong> (solicita ao cliente a descrição da
+                            alteração desejada).
+                        </p>
+                    </div>
+                    <div class="info-card">
+                        <span class="status-badge status-pub">🚀 Publicar</span>
+                        <p class="card-desc">
+                            Programa a <strong>postagem do conteúdo</strong> do cliente no horário
+                            definido na tarefa.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="site-footer">
+                <div class="footer-brand">
+                    <span>Verbo</span> — Posicionamento Digital ·
+                    <a href="https://www.somosverbo.com.br" target="_blank" rel="noopener">somosverbo.com.br</a>
+                </div>
+                <div class="footer-note">Manual interno · 2026 · mantido pela equipe Verbo</div>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- ── Support Chat Widget ── -->
+    <button class="support-fab" id="support-fab" aria-label="Abrir suporte">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+        </svg>
+        Tirar dúvida
+    </button>
+
+    <section class="support-panel" id="support-panel" aria-live="polite">
+        <div class="support-header">
+            <div class="support-avatar"><img src="digital_y.png" alt="Verbo"></div>
+            <div class="support-hinfo">
+                <h3>Suporte do Manual</h3>
+                <div class="st">Assistente Verbo · online</div>
+            </div>
+            <button class="support-close" id="support-close" aria-label="Fechar">✕</button>
+        </div>
+        <div class="support-messages" id="support-messages"></div>
+        <div class="support-suggestions" id="support-suggestions">
+            <button class="s-chip">Onde salvo um carrossel pronto?</button>
+            <button class="s-chip">Como nomeio os arquivos?</button>
+            <button class="s-chip">O que faz o status "Aprovação Arte"?</button>
+        </div>
+        <form class="support-input" id="support-form">
+            <input type="text" id="support-text" placeholder="Tire sua dúvida sobre o manual..." autocomplete="off" required>
+            <button type="submit" id="support-send" aria-label="Enviar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </form>
+    </section>
+
+    <script>
+        // ── Mobile drawer ──
+        const body = document.body;
+        const menuBtn = document.getElementById('menu-btn');
+        const overlay = document.getElementById('sidebar-overlay');
+        function closeNav() { body.classList.remove('nav-open'); }
+        menuBtn.addEventListener('click', () => body.classList.toggle('nav-open'));
+        overlay.addEventListener('click', closeNav);
+        document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', closeNav));
+
+        // ── Scrollspy ──
+        const navLinks = [...document.querySelectorAll('.nav-link')];
+        const linkById = id => navLinks.find(l => l.getAttribute('href') === '#' + id);
+        const sections = [...document.querySelectorAll('section[id]')];
+
+        const spy = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    const active = linkById(e.target.id);
+                    if (active) active.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+        sections.forEach(s => spy.observe(s));
+
+        // ── Reveal on scroll ──
+        const reveal = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); }
+            });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+        document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
+
+        // ── Support Chat Widget ──
+        const SUPPORT_WEBHOOK = 'https://automacoes-verbo-n8n.xpddsl.easypanel.host/webhook/manual-suporte';
+
+        const sFab   = document.getElementById('support-fab');
+        const sPanel = document.getElementById('support-panel');
+        const sClose = document.getElementById('support-close');
+        const sMsgs  = document.getElementById('support-messages');
+        const sForm  = document.getElementById('support-form');
+        const sText  = document.getElementById('support-text');
+        const sSend  = document.getElementById('support-send');
+        const sSugg  = document.getElementById('support-suggestions');
+
+        const sSessionId = 'manual-' + Math.random().toString(36).slice(2, 10);
+        let sBusy = false;
+        let sGreeted = false;
+
+        function openSupport() {
+            body.classList.add('support-open');
+            if (!sGreeted) {
+                sGreeted = true;
+                addBot('Olá! 👋 Sou o assistente do **Manual da Verbo**. Posso explicar a organização das pastas no Drive, os padrões de nomenclatura de arquivos e como funcionam as automações do ClickUp. **O que você quer entender?**');
+            }
+            setTimeout(() => sText.focus(), 100);
+        }
+        function closeSupport() { body.classList.remove('support-open'); }
+
+        sFab.addEventListener('click', openSupport);
+        sClose.addEventListener('click', closeSupport);
+
+        sSugg.querySelectorAll('.s-chip').forEach(chip => {
+            chip.addEventListener('click', () => sendSupport(chip.textContent));
+        });
+
+        function sMarkdown(t) {
+            t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            t = t.replace(/`(.+?)`/g, '<code>$1</code>');
+            t = t.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+            t = t.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>').replace(/<\/ul>\s*<ul>/g, '');
+            t = t.replace(/\n/g, '<br>').replace(/<br>(<ul>|<li>)/g, '$1');
+            return t;
+        }
+        function addBot(text) {
+            const w = document.createElement('div');
+            w.className = 's-msg bot';
+            w.innerHTML = '<div class="bubble">' + sMarkdown(text) + '</div>';
+            sMsgs.appendChild(w); sMsgs.scrollTop = sMsgs.scrollHeight;
+        }
+        function addUser(text) {
+            const w = document.createElement('div');
+            w.className = 's-msg user';
+            const b = document.createElement('div'); b.className = 'bubble'; b.textContent = text;
+            w.appendChild(b); sMsgs.appendChild(w); sMsgs.scrollTop = sMsgs.scrollHeight;
+        }
+        function showSTyping() {
+            const w = document.createElement('div');
+            w.className = 's-msg bot'; w.id = 's-typing';
+            w.innerHTML = '<div class="bubble s-typing"><span></span><span></span><span></span></div>';
+            sMsgs.appendChild(w); sMsgs.scrollTop = sMsgs.scrollHeight;
+        }
+        function hideSTyping() { const el = document.getElementById('s-typing'); if (el) el.remove(); }
+        function setSBusy(b) { sBusy = b; sText.disabled = b; sSend.disabled = b; }
+
+        function sendSupport(text) {
+            text = (text || '').trim();
+            if (!text || sBusy) return;
+            sSugg.style.display = 'none';
+            addUser(text); sText.value = '';
+            setSBusy(true); showSTyping();
+
+            fetch(SUPPORT_WEBHOOK, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId: sSessionId, chatInput: text })
+            })
+            .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+            .then(d => {
+                hideSTyping();
+                const reply = d.output || d.reply || d.text || d.message || 'Desculpe, não consegui responder agora.';
+                addBot(reply);
+            })
+            .catch(() => {
+                hideSTyping();
+                addBot('*(O assistente está indisponível no momento. Tente novamente em instantes ou fale com o time da Verbo.)*');
+            })
+            .finally(() => { setSBusy(false); sText.focus(); });
+        }
+
+        sForm.addEventListener('submit', e => { e.preventDefault(); sendSupport(sText.value); });
+    </script>
+</body>
+</html>
