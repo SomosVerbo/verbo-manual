@@ -398,6 +398,46 @@
         .code-body .k { color: var(--color-accent); font-weight: 700; }
         .code-body .c { color: rgba(255,255,255,0.45); }
 
+        /* ── Skill list (catálogo com prompts copiáveis) ── */
+        .skill-list { display: flex; flex-direction: column; gap: 1.1rem; margin: 1.5rem 0; }
+        .skill-item {
+            background: var(--color-primary);
+            border: 1px solid rgba(204,255,0,0.25);
+            border-radius: 12px; padding: 1.3rem 1.5rem;
+            transition: border-color 0.25s ease;
+        }
+        .skill-item:hover { border-color: var(--color-accent); }
+        .skill-item-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.4rem; }
+        .skill-item-head .icon { font-size: 1.3rem; }
+        .skill-item-head h3 {
+            font-family: var(--font-heading); font-size: 1.05rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.3px; color: var(--color-white);
+        }
+        .skill-item .desc { font-size: 0.82rem; line-height: 1.6; color: var(--color-text-dim); margin-bottom: 0.9rem; }
+        .prompt-box {
+            position: relative;
+            background: #100f0a;
+            border: 1px solid rgba(204,255,0,0.3);
+            border-radius: 8px;
+            padding: 0.9rem 6.5rem 0.9rem 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem; line-height: 1.65;
+            color: rgba(255,255,255,0.9);
+            word-break: break-word;
+        }
+        .prompt-box .var { color: var(--color-accent); font-weight: 700; }
+        .prompt-box .path { color: rgba(204,255,0,0.65); }
+        .copy-btn {
+            position: absolute; top: 0.6rem; right: 0.6rem;
+            background: var(--color-accent); color: var(--color-primary);
+            border: none; border-radius: 6px; cursor: pointer;
+            padding: 0.35rem 0.7rem; font-family: var(--font-body);
+            font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover { transform: scale(1.06); }
+        .copy-btn.copied { background: #4ade80; }
+
         /* ── Flow steps ── */
         .flow { display: flex; flex-direction: column; gap: 0.85rem; margin: 1.5rem 0; }
         .flow-step {
@@ -1022,86 +1062,99 @@
                 <p class="lead-text">
                     As <strong>skills</strong> são "ferramentas" prontas do Claude Code criadas pela
                     Verbo — fluxos especializados (criar posts, reels, encartes, organizar materiais,
-                    auditar atendimento...) que você aciona com um comando. Elas ficam na pasta
+                    auditar atendimento...). Elas ficam na pasta
                     <code>G:\Meu Drive\Antigravity\agencia\.claude\skills</code>, no Drive, então
                     estão disponíveis em <strong>qualquer computador da agência</strong>.
                 </p>
 
                 <div class="objetivo-block">
-                    <div class="objetivo-label"><span class="pulse-dot"></span> Como usar — jeito recomendado</div>
+                    <div class="objetivo-label"><span class="pulse-dot"></span> Como usar</div>
                     <div class="objetivo-text">
-                        Abra o <strong>Claude Code na pasta <code>G:\Meu Drive\Antigravity\agencia</code></strong>.
-                        Assim ele descobre as skills automaticamente e você as chama digitando
-                        <strong>/</strong> + o nome (ex: <strong>/Criador-de-Posts</strong>) — ou apenas
-                        pedindo em linguagem natural ("cria o post da task X"). Não precisa informar o
-                        caminho. Vale em todo PC com o Drive sincronizado, sem instalar nada.
-                    </div>
-                </div>
-
-                <div class="callout">
-                    <div class="objetivo-label"><span class="pulse-dot"></span> Jeito reserva — de qualquer pasta</div>
-                    <div class="objetivo-text">
-                        Se o Claude estiver aberto em outra pasta, é só apontar o arquivo da skill:
-                        <br><em>"Leia e siga as instruções de
-                        <code>...\skills\Criador-de-Posts\skill.md</code> para a task X."</em>
-                        Funciona porque o Claude lê o arquivo direto.
+                        Escolha a skill abaixo, clique em <strong>Copiar</strong>, cole o prompt no
+                        Claude Code e troque apenas as partes em <strong>[COLCHETES]</strong> pela
+                        informação do seu caso. O prompt já aponta o arquivo da skill pelo
+                        <strong>caminho completo</strong>, então funciona <strong>de qualquer pasta e em
+                        qualquer máquina</strong> da agência — sem precisar instalar nada nem abrir o
+                        Claude numa pasta específica.
                     </div>
                 </div>
 
                 <div class="phase-divider"><span>catálogo de skills</span></div>
 
-                <div class="card-grid" style="margin-top:2rem;">
-                    <div class="info-card">
-                        <span class="card-icon">✍️</span>
-                        <h3 class="card-title">Criador-de-Conteudo</h3>
-                        <p class="card-desc">Estrategista de conteúdo: cria <strong>briefings editoriais</strong> e tasks no ClickUp com frameworks de copy (PAS, AIDA, etc.) calibrados ao brand.json do cliente.</p>
-                        <span class="card-tag">"cria conteúdo do cliente X"</span>
+                <div class="skill-list">
+                    <div class="skill-item">
+                        <div class="skill-item-head"><span class="icon">✍️</span><h3>Criador-de-Conteudo</h3></div>
+                        <p class="desc">Estrategista de conteúdo: cria <strong>briefings editoriais</strong> e tasks no ClickUp com frameworks de copy (PAS, AIDA, etc.) calibrados ao brand.json do cliente.</p>
+                        <div class="prompt-box">
+                            <button class="copy-btn" data-copy="Use a skill em G:\Meu Drive\Antigravity\agencia\.claude\skills\Criador-de-Conteudo\skill.md e crie o conteúdo para o cliente [CLIENTE] nos dias [DATAS], com o tema [TEMA].">Copiar</button>
+                            Use a skill em <span class="path">G:\Meu Drive\Antigravity\agencia\.claude\skills\Criador-de-Conteudo\skill.md</span> e crie o conteúdo para o cliente <span class="var">[CLIENTE]</span> nos dias <span class="var">[DATAS]</span>, com o tema <span class="var">[TEMA]</span>.
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <span class="card-icon">🖼️</span>
-                        <h3 class="card-title">Criador-de-Posts</h3>
-                        <p class="card-desc">Lê a task do ClickUp, aplica a identidade visual do cliente e <strong>gera as artes</strong> de feed (1080×1350) e story (1080×1920).</p>
-                        <span class="card-tag">"cria o post da task X"</span>
+
+                    <div class="skill-item">
+                        <div class="skill-item-head"><span class="icon">🖼️</span><h3>Criador-de-Posts</h3></div>
+                        <p class="desc">Lê a task do ClickUp, aplica a identidade visual do cliente e <strong>gera as artes</strong> de feed (1080×1350) e story (1080×1920).</p>
+                        <div class="prompt-box">
+                            <button class="copy-btn" data-copy="Use a skill em G:\Meu Drive\Antigravity\agencia\.claude\skills\Criador-de-Posts\skill.md e crie os posts da task [NOME OU LINK DA TASK DO CLICKUP].">Copiar</button>
+                            Use a skill em <span class="path">G:\Meu Drive\Antigravity\agencia\.claude\skills\Criador-de-Posts\skill.md</span> e crie os posts da task <span class="var">[NOME OU LINK DA TASK DO CLICKUP]</span>.
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <span class="card-icon">🎬</span>
-                        <h3 class="card-title">Criador-de-Reels</h3>
-                        <p class="card-desc">Baixa clips do Drive, normaliza, aplica texto + logo, junta com transições e entrega o <strong>MP4 final</strong> na pasta prontos. (Precisa de FFmpeg.)</p>
-                        <span class="card-tag">"cria o reel da campanha X"</span>
+
+                    <div class="skill-item">
+                        <div class="skill-item-head"><span class="icon">🎬</span><h3>Criador-de-Reels</h3></div>
+                        <p class="desc">Baixa clips do Drive, normaliza, aplica texto + logo, junta com transições e entrega o <strong>MP4 final</strong> na pasta prontos. (Precisa de FFmpeg.)</p>
+                        <div class="prompt-box">
+                            <button class="copy-btn" data-copy="Use a skill em G:\Meu Drive\Antigravity\agencia\.claude\skills\Criador-de-Reels\skill.md e gere o reel da campanha [CAMPANHA] do cliente [CLIENTE].">Copiar</button>
+                            Use a skill em <span class="path">G:\Meu Drive\Antigravity\agencia\.claude\skills\Criador-de-Reels\skill.md</span> e gere o reel da campanha <span class="var">[CAMPANHA]</span> do cliente <span class="var">[CLIENTE]</span>.
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <span class="card-icon">🛒</span>
-                        <h3 class="card-title">Encarte-H7</h3>
-                        <p class="card-desc">Gera as artes do <strong>encarte semanal da Drogaria H7</strong> a partir de uma planilha do Google Sheets — uma página por produto + página "Todos".</p>
-                        <span class="card-tag">"gera as artes do encarte H7"</span>
+
+                    <div class="skill-item">
+                        <div class="skill-item-head"><span class="icon">🛒</span><h3>Encarte-H7</h3></div>
+                        <p class="desc">Gera as artes do <strong>encarte semanal da Drogaria H7</strong> a partir de uma planilha do Google Sheets — uma página por produto + página "Todos".</p>
+                        <div class="prompt-box">
+                            <button class="copy-btn" data-copy="Use a skill em G:\Meu Drive\Antigravity\agencia\.claude\skills\Encarte-H7\skill.md e gere as artes do encarte H7 a partir da planilha [LINK DO GOOGLE SHEETS].">Copiar</button>
+                            Use a skill em <span class="path">G:\Meu Drive\Antigravity\agencia\.claude\skills\Encarte-H7\skill.md</span> e gere as artes do encarte H7 a partir da planilha <span class="var">[LINK DO GOOGLE SHEETS]</span>.
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <span class="card-icon">💡</span>
-                        <h3 class="card-title">Gerar-Docs-Ideias</h3>
-                        <p class="card-desc">Monta um <strong>site de aprovação de ideias</strong> (tema Verbo) com as tarefas em "Aprovação Ideia" do ClickUp e publica no GitHub Pages para enviar ao cliente.</p>
-                        <span class="card-tag">"cria o doc de ideias do cliente X de [mês]"</span>
+
+                    <div class="skill-item">
+                        <div class="skill-item-head"><span class="icon">💡</span><h3>Gerar-Docs-Ideias</h3></div>
+                        <p class="desc">Monta um <strong>site de aprovação de ideias</strong> (tema Verbo) com as tarefas em "Aprovação Ideia" do ClickUp e publica no GitHub Pages para enviar ao cliente.</p>
+                        <div class="prompt-box">
+                            <button class="copy-btn" data-copy="Use a skill em G:\Meu Drive\Antigravity\agencia\.claude\skills\Gerar-Docs-Ideias\skill.md e gere o site de aprovação de ideias do cliente [CLIENTE] do mês [MÊS/ANO].">Copiar</button>
+                            Use a skill em <span class="path">G:\Meu Drive\Antigravity\agencia\.claude\skills\Gerar-Docs-Ideias\skill.md</span> e gere o site de aprovação de ideias do cliente <span class="var">[CLIENTE]</span> do mês <span class="var">[MÊS/ANO]</span>.
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <span class="card-icon">🗂️</span>
-                        <h3 class="card-title">Organizar-Materiais-Cliente</h3>
-                        <p class="card-desc">Padroniza a pasta de materiais do cliente (<strong>Identidade Visual</strong> + <strong>Fotos e Vídeos</strong>) e atualiza os caminhos no brand.json.</p>
-                        <span class="card-tag">"organiza os materiais do cliente X"</span>
+
+                    <div class="skill-item">
+                        <div class="skill-item-head"><span class="icon">🗂️</span><h3>Organizar-Materiais-Cliente</h3></div>
+                        <p class="desc">Padroniza a pasta de materiais do cliente (<strong>Identidade Visual</strong> + <strong>Fotos e Vídeos</strong>) e atualiza os caminhos no brand.json.</p>
+                        <div class="prompt-box">
+                            <button class="copy-btn" data-copy="Use a skill em G:\Meu Drive\Antigravity\agencia\.claude\skills\Organizar-Materiais-Cliente\skill.md e organize os materiais do cliente [CLIENTE].">Copiar</button>
+                            Use a skill em <span class="path">G:\Meu Drive\Antigravity\agencia\.claude\skills\Organizar-Materiais-Cliente\skill.md</span> e organize os materiais do cliente <span class="var">[CLIENTE]</span>.
+                        </div>
                     </div>
-                    <div class="info-card">
-                        <span class="card-icon">🔍</span>
-                        <h3 class="card-title">Auditor-Atendimento-n8n</h3>
-                        <p class="card-desc">Simula <strong>100 conversas de leads</strong> contra os agentes reais de um fluxo de atendimento no n8n (offline), mede falhas e entrega os <strong>system prompts reescritos</strong>.</p>
-                        <span class="card-tag">"audita o atendimento do n8n do cliente X"</span>
+
+                    <div class="skill-item">
+                        <div class="skill-item-head"><span class="icon">🔍</span><h3>Auditor-Atendimento-n8n</h3></div>
+                        <p class="desc">Simula <strong>100 conversas de leads</strong> contra os agentes reais de um fluxo de atendimento no n8n (offline), mede falhas e entrega os <strong>system prompts reescritos</strong>.</p>
+                        <div class="prompt-box">
+                            <button class="copy-btn" data-copy="Use a skill em G:\Meu Drive\Antigravity\agencia\.claude\skills\Auditor-Atendimento-n8n\skill.md e audite o atendimento do n8n do cliente [CLIENTE].">Copiar</button>
+                            Use a skill em <span class="path">G:\Meu Drive\Antigravity\agencia\.claude\skills\Auditor-Atendimento-n8n\skill.md</span> e audite o atendimento do n8n do cliente <span class="var">[CLIENTE]</span>.
+                        </div>
                     </div>
                 </div>
 
                 <div class="callout">
-                    <div class="objetivo-label"><span class="pulse-dot"></span> Boa prática</div>
+                    <div class="objetivo-label"><span class="pulse-dot"></span> Boas práticas</div>
                     <div class="objetivo-text">
-                        Cada skill tem um arquivo <code>skill.md</code> com as instruções completas e,
-                        quando aplicável, um <code>skill-config.json</code> com os caminhos da máquina.
-                        Em um computador novo, ajuste só o <code>skill-config.json</code> (e o
-                        <code>SETUP.md</code>, quando existir) — não mexa no <code>skill.md</code>.
+                        Cada skill tem um <code>skill.md</code> com as instruções completas e, quando
+                        aplicável, um <code>skill-config.json</code> com os caminhos da máquina. Em um PC
+                        novo, ajuste só o <code>skill-config.json</code> (e o <code>SETUP.md</code>, quando
+                        existir) — nunca o <code>skill.md</code>. Os prompts acima usam o caminho no
+                        <code>G:</code>; se em alguma máquina o Drive estiver em outra letra, troque o
+                        <code>G:</code> no início do caminho.
                     </div>
                 </div>
             </section>
@@ -1185,6 +1238,27 @@
             });
         }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
         document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
+
+        // ── Copiar prompt das skills ──
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const text = btn.getAttribute('data-copy');
+                const done = () => {
+                    btn.textContent = 'Copiado!'; btn.classList.add('copied');
+                    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1600);
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+                } else { fallbackCopy(text, done); }
+            });
+        });
+        function fallbackCopy(text, cb) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); cb(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
 
         // ── Support Chat Widget ──
         const SUPPORT_WEBHOOK = 'https://automacoes-verbo-n8n.xpddsl.easypanel.host/webhook/manual-suporte';
