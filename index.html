@@ -683,6 +683,7 @@
                 <a class="nav-link" href="#carrossel"><span class="nav-num">04</span> Carrossel</a>
                 <a class="nav-link" href="#clickup"><span class="nav-num">05</span> ClickUp — o centro</a>
                 <a class="nav-link" href="#automacoes"><span class="nav-num">06</span> Automações</a>
+                <a class="nav-link" href="#skills"><span class="nav-num">07</span> Skills do Claude</a>
             </nav>
 
             <div class="sidebar-foot">
@@ -1005,6 +1006,102 @@
                             Programa a <strong>postagem do conteúdo</strong> do cliente no horário
                             definido na tarefa.
                         </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 07 — Skills -->
+            <section class="section reveal" id="skills">
+                <div class="section-head">
+                    <div class="phase-number">07</div>
+                    <div class="section-info">
+                        <h2 class="phase-name">Skills do Claude</h2>
+                        <span class="phase-period">Ferramentas prontas da agência</span>
+                    </div>
+                </div>
+                <p class="lead-text">
+                    As <strong>skills</strong> são "ferramentas" prontas do Claude Code criadas pela
+                    Verbo — fluxos especializados (criar posts, reels, encartes, organizar materiais,
+                    auditar atendimento...) que você aciona com um comando. Elas ficam na pasta
+                    <code>G:\Meu Drive\Antigravity\agencia\.claude\skills</code>, no Drive, então
+                    estão disponíveis em <strong>qualquer computador da agência</strong>.
+                </p>
+
+                <div class="objetivo-block">
+                    <div class="objetivo-label"><span class="pulse-dot"></span> Como usar — jeito recomendado</div>
+                    <div class="objetivo-text">
+                        Abra o <strong>Claude Code na pasta <code>G:\Meu Drive\Antigravity\agencia</code></strong>.
+                        Assim ele descobre as skills automaticamente e você as chama digitando
+                        <strong>/</strong> + o nome (ex: <strong>/Criador-de-Posts</strong>) — ou apenas
+                        pedindo em linguagem natural ("cria o post da task X"). Não precisa informar o
+                        caminho. Vale em todo PC com o Drive sincronizado, sem instalar nada.
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="objetivo-label"><span class="pulse-dot"></span> Jeito reserva — de qualquer pasta</div>
+                    <div class="objetivo-text">
+                        Se o Claude estiver aberto em outra pasta, é só apontar o arquivo da skill:
+                        <br><em>"Leia e siga as instruções de
+                        <code>...\skills\Criador-de-Posts\skill.md</code> para a task X."</em>
+                        Funciona porque o Claude lê o arquivo direto.
+                    </div>
+                </div>
+
+                <div class="phase-divider"><span>catálogo de skills</span></div>
+
+                <div class="card-grid" style="margin-top:2rem;">
+                    <div class="info-card">
+                        <span class="card-icon">✍️</span>
+                        <h3 class="card-title">Criador-de-Conteudo</h3>
+                        <p class="card-desc">Estrategista de conteúdo: cria <strong>briefings editoriais</strong> e tasks no ClickUp com frameworks de copy (PAS, AIDA, etc.) calibrados ao brand.json do cliente.</p>
+                        <span class="card-tag">"cria conteúdo do cliente X"</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🖼️</span>
+                        <h3 class="card-title">Criador-de-Posts</h3>
+                        <p class="card-desc">Lê a task do ClickUp, aplica a identidade visual do cliente e <strong>gera as artes</strong> de feed (1080×1350) e story (1080×1920).</p>
+                        <span class="card-tag">"cria o post da task X"</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🎬</span>
+                        <h3 class="card-title">Criador-de-Reels</h3>
+                        <p class="card-desc">Baixa clips do Drive, normaliza, aplica texto + logo, junta com transições e entrega o <strong>MP4 final</strong> na pasta prontos. (Precisa de FFmpeg.)</p>
+                        <span class="card-tag">"cria o reel da campanha X"</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🛒</span>
+                        <h3 class="card-title">Encarte-H7</h3>
+                        <p class="card-desc">Gera as artes do <strong>encarte semanal da Drogaria H7</strong> a partir de uma planilha do Google Sheets — uma página por produto + página "Todos".</p>
+                        <span class="card-tag">"gera as artes do encarte H7"</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">💡</span>
+                        <h3 class="card-title">Gerar-Docs-Ideias</h3>
+                        <p class="card-desc">Monta um <strong>site de aprovação de ideias</strong> (tema Verbo) com as tarefas em "Aprovação Ideia" do ClickUp e publica no GitHub Pages para enviar ao cliente.</p>
+                        <span class="card-tag">"cria o doc de ideias do cliente X de [mês]"</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🗂️</span>
+                        <h3 class="card-title">Organizar-Materiais-Cliente</h3>
+                        <p class="card-desc">Padroniza a pasta de materiais do cliente (<strong>Identidade Visual</strong> + <strong>Fotos e Vídeos</strong>) e atualiza os caminhos no brand.json.</p>
+                        <span class="card-tag">"organiza os materiais do cliente X"</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🔍</span>
+                        <h3 class="card-title">Auditor-Atendimento-n8n</h3>
+                        <p class="card-desc">Simula <strong>100 conversas de leads</strong> contra os agentes reais de um fluxo de atendimento no n8n (offline), mede falhas e entrega os <strong>system prompts reescritos</strong>.</p>
+                        <span class="card-tag">"audita o atendimento do n8n do cliente X"</span>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="objetivo-label"><span class="pulse-dot"></span> Boa prática</div>
+                    <div class="objetivo-text">
+                        Cada skill tem um arquivo <code>skill.md</code> com as instruções completas e,
+                        quando aplicável, um <code>skill-config.json</code> com os caminhos da máquina.
+                        Em um computador novo, ajuste só o <code>skill-config.json</code> (e o
+                        <code>SETUP.md</code>, quando existir) — não mexa no <code>skill.md</code>.
                     </div>
                 </div>
             </section>
